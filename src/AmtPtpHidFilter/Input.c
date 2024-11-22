@@ -217,9 +217,44 @@ PtpFilterInputRequestCompletionCallback(
 		ptpOutputReport.Contacts[i].Confidence = ((signed short) (f_type5->TouchMinor) << 1) < 345 && ((signed short) (f_type5->TouchMinor) << 1) < 345;
 	}
 
+	if (deviceContext->IsThreeFingerDragEnabled && raw_n == 3) {
+		BOOLEAN allValid = TRUE;
+		for (size_t i = 0; i < 3; i++) {
+			if (!ptpOutputReport.Contacts[i].TipSwitch || 
+				!ptpOutputReport.Contacts[i].Confidence) {
+				allValid = FALSE;
+				break;
+			}
+		}
+		
+		if (allValid) {
+			ptpOutputReport.IsButtonClicked = TRUE;
+		}
+	}
+
 	// Button
 	if ((responseBuffer[deviceContext->InputButtonDelta] & 1) != 0) {
 		ptpOutputReport.IsButtonClicked = TRUE;
+	}
+
+	if (deviceContext->IsFourFingerPinchEnabled && raw_n == 4) {
+		BOOLEAN allValid = TRUE;
+		for (size_t i = 0; i < 4; i++) {
+			if (!ptpOutputReport.Contacts[i].TipSwitch || 
+				!ptpOutputReport.Contacts[i].Confidence) {
+				allValid = FALSE;
+				break;
+			}
+		}
+		
+		if (allValid) {
+			USHORT currentArea = CalculateFingersArea(ptpOutputReport.Contacts);
+			if (deviceContext->LastFingersArea > 0 && 
+				currentArea < deviceContext->LastFingersArea * 0.8) {
+				TriggerConfiguredShortcut(deviceContext->SelectedFourFingerPinchAction);
+			}
+			deviceContext->LastFingersArea = currentArea;
+		}
 	}
 
 	status = WdfRequestRetrieveOutputMemory(ptpRequest, &ptpRequestMemory);

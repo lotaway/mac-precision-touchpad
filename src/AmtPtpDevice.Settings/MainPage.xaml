@@ -39,6 +39,15 @@
             <TextBlock Style="{StaticResource BodyTextBlockStyle}"
                     Text="Note: Settings won't be persisted for debug purpose. To reset values, unplug and plug in your trackpad." />
         </StackPanel>
+        <StackPanel x:Name="m_gestureControl">
+            <CheckBox x:Name="m_threeFingerDragCheckBox"
+                      Content="Enable three-finger window drag"
+                      IsChecked="{x:Bind ViewModel.IsThreeFingerDragEnabled, Mode=TwoWay}"/>
+            <ComboBox x:Name="m_fourFingerPinchAction"
+                      Header="Four-finger pinch action"
+                      ItemsSource="{x:Bind ViewModel.GestureActions}"
+                      SelectedItem="{x:Bind ViewModel.SelectedFourFingerPinchAction, Mode=TwoWay}"/>
+        </StackPanel>
         <StackPanel x:Name="m_disconnctedView" Margin="15,10" Grid.Row="1">
             <TextBlock Margin="0,0,0,10"
                        Text="Please connect your device and continue."

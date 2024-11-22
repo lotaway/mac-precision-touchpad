@@ -47,6 +47,8 @@ typedef struct _PTP_REPORT {
 	USHORT      ScanTime;
 	UCHAR       ContactCount;
 	UCHAR       IsButtonClicked;
+	BOOLEAN     IsThreeFingerDragEnabled;
+	BOOLEAN     IsFourFingerPinchEnabled;
 } PTP_REPORT, * PPTP_REPORT;
 
 #include <poppack.h>
