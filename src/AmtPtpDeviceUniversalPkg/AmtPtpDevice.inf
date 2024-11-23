@@ -28,6 +28,7 @@ AmtPtpHidFilter.sys   = 1,,
 %ManufacturerName%=Standard,NT$ARCH$
 
 [Standard.NT$ARCH$]
+TargetOSVersion=10.0.17134
 ; Apple T2
 %AmtPtpDeviceUsbKm.DeviceDesc%=AmtPtpDeviceUsbKm_Device, USB\Vid_05ac&Pid_0273&MI_02
 %AmtPtpDeviceUsbKm.DeviceDesc%=AmtPtpDeviceUsbKm_Device, USB\Vid_05ac&Pid_0274&MI_02
@@ -110,44 +111,13 @@ AmtPtpDeviceUsbUm.dll
 [SpiKmDrivers_Dir]
 AmtPtpDeviceSpiKm.sys
 
-; Microsoft HID KMDF driver install sections
-[mshidkmdf_Service_Inst]
-ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
-StartType      = 3                  ; SERVICE_DEMAND_START
-ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
-ServiceBinary  = %10%\System32\Drivers\mshidkmdf.sys
-
-; PTP filter
-[AmtPtpHidFilter_MiniPortDevice.NT]
-CopyFiles=FilterDriver_Payload
-
-[AmtPtpHidFilter_MiniPortDevice.NT.Services]
-AddService = AmtPtpHidFilter,, AmtPtpHidFilter_Service_Inst
-AddService = mshidkmdf, %SPSVCINST_ASSOCSERVICE%, mshidkmdf_Service_Inst
-
-[AmtPtpHidFilter_MiniPortDevice.NT.HW]
-AddReg=AmtPtpHidFilter_AddReg
-
-[AmtPtpHidFilter_AddReg]
-HKR,,FriendlyName,,%AmtPtpHidFilter.DeviceDesc%
-HKR,,"LowerFilters",0x00010008,"AmtPtpHidFilter"
-
-[AmtPtpHidFilter_MiniPortDevice.NT.Wdf]
-KmdfService = AmtPtpHidFilter, AmtPtpHidFilter_wdfsect
-
-[AmtPtpHidFilter_Service_Inst]
-DisplayName    = %AmtPtpHidFilter.SVCDESC%
+; -------------- AmtPtpDeviceUsbKm driver install sections
+[AmtPtpDeviceUsbKm_Service_Inst]
+DisplayName    = %AmtPtpDeviceUsbKm.SVCDESC%
 ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
 StartType      = 3               ; SERVICE_DEMAND_START
 ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
-ServiceBinary  = %13%\AmtPtpHidFilter.sys
-
-[AmtPtpHidFilter_wdfsect]
-KmdfLibraryVersion = $KMDFVERSION$
-
-; USB KM
-[AmtPtpDeviceUsbKm_Device.NT]
-CopyFiles=PtpKmDrivers_Dir
+ServiceBinary  = %13%\AmtPtpDeviceUsbKm.sys
 
 [AmtPtpDeviceUsbKm_Device.NT.Services]
 AddService = AmtPtpDeviceUsbKm,, AmtPtpDeviceUsbKm_Service_Inst
@@ -159,14 +129,6 @@ AddReg=AmtPtpDeviceUsbKm_AddReg
 [AmtPtpDeviceUsbKm_AddReg]
 HKR,,FriendlyName,,%AmtPtpDeviceUsbKm.DeviceDesc%
 HKR,,"LowerFilters",0x00010008,"AmtPtpDeviceUsbKm"
-
-; -------------- AmtPtpDeviceUsbKm driver install sections
-[AmtPtpDeviceUsbKm_Service_Inst]
-DisplayName    = %AmtPtpDeviceUsbKm.SVCDESC%
-ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
-StartType      = 3               ; SERVICE_DEMAND_START
-ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
-ServiceBinary  = %13%\AmtPtpDeviceUsbKm.sys
 
 [AmtPtpDeviceUsbKm_Device.NT.Wdf]
 KmdfService = AmtPtpDeviceUsbKm, AmtPtpDeviceUsbKm_wdfsect
